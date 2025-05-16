@@ -1,6 +1,9 @@
+// pages/index.tsx
+
 import { useState, useEffect } from 'react'
-import { format } from 'date-fns'
 import Head from 'next/head'
+import { format } from 'date-fns'
+import '../styles/globals.css'
 
 type WeatherData = {
   city: string
@@ -29,7 +32,6 @@ type WeatherData = {
     }
     humidity: number
     wind_speed: number
-    units: string
   }>
 }
 
@@ -46,17 +48,17 @@ export default function Home() {
   const fetchWeatherData = async (cityName: string) => {
     setLoading(true)
     setError(null)
-    
+
     try {
       const response = await fetch(
         `http://localhost:8000/api/weather?city=${encodeURIComponent(cityName)}&units=${unit}`
       )
-      
+
       if (!response.ok) {
         throw new Error('City not found or API error')
       }
-      
-      const data = await response.json()
+
+      const data: WeatherData = await response.json()
       setWeatherData(data)
       setCity(cityName)
     } catch (err) {
@@ -70,25 +72,25 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchInput.trim()) {
-      fetchWeatherData(searchInput)
+      fetchWeatherData(searchInput.trim())
     }
   }
 
   const toggleUnit = () => {
-    const newUnit = unit === 'metric' ? 'imperial' : 'metric'
+    const newUnit: Unit = unit === 'metric' ? 'imperial' : 'metric'
     setUnit(newUnit)
     if (city) {
       fetchWeatherData(city)
     }
   }
 
-  const getWeatherIcon = (iconCode: string) => {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
-  }
+  const getWeatherIcon = (iconCode: string) =>
+    `https://openweathermap.org/img/wn/${iconCode}@2x.png`
 
   useEffect(() => {
-    // Fetch default weather for a city on initial load
+    // Initial load for a default city
     fetchWeatherData('London')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -100,8 +102,10 @@ export default function Home() {
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">Weather Forecast</h1>
-          
+          <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">
+            Weather Forecast
+          </h1>
+
           {/* Search Box */}
           <form onSubmit={handleSearch} className="mb-8 flex gap-2">
             <input
@@ -143,7 +147,10 @@ export default function Home() {
                       {weatherData.city}, {weatherData.country}
                     </h2>
                     <p className="text-blue-100">
-                      {format(new Date(weatherData.current.dt * 1000), 'EEEE, MMMM d, yyyy')}
+                      {format(
+                        new Date(weatherData.current.dt * 1000),
+                        'EEEE, MMMM d, yyyy'
+                      )}
                     </p>
                     <p className="mt-2 text-xl capitalize">
                       {weatherData.current.weather.description}
@@ -155,7 +162,7 @@ export default function Home() {
                       alt={weatherData.current.weather.main}
                       className="w-20 h-20"
                     />
-                    <span className="text-5xl font-bold">
+                    <span className="text-5xl font-bold ml-4">
                       {Math.round(weatherData.current.temp)}°
                       {unit === 'metric' ? 'C' : 'F'}
                     </span>
@@ -166,13 +173,18 @@ export default function Home() {
               {/* Weather Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:p-8">
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Wind Status</h3>
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                    Wind Status
+                  </h3>
                   <p className="text-2xl font-bold">
-                    {weatherData.current.wind_speed} {unit === 'metric' ? 'm/s' : 'mph'}
+                    {weatherData.current.wind_speed}{' '}
+                    {unit === 'metric' ? 'm/s' : 'mph'}
                   </p>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Humidity</h3>
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                    Humidity
+                  </h3>
                   <p className="text-2xl font-bold">
                     {weatherData.current.humidity}%
                   </p>
@@ -181,34 +193,38 @@ export default function Home() {
 
               {/* Forecast */}
               <div className="p-6 md:p-8 border-t border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">3-Day Forecast</h3>
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                  3-Day Forecast
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {weatherData.forecast.map((day, index) => (
-                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                  {weatherData.forecast.slice(0, 3).map((day) => (
+                    <div
+                      key={day.dt}
+                      className="bg-gray-50 p-4 rounded-lg flex flex-col items-center"
+                    >
                       <h4 className="font-medium text-gray-700">
                         {format(new Date(day.dt * 1000), 'EEEE')}
                       </h4>
-                      <div className="flex items-center justify-between mt-2">
-                        <img
-                          src={getWeatherIcon(day.weather.icon)}
-                          alt={day.weather.main}
-                          className="w-12 h-12"
-                        />
-                        <div className="text-right">
-                          <p className="text-xl font-bold">
-                            {Math.round(day.temp)}°{unit === 'metric' ? 'C' : 'F'}
-                          </p>
-                          <p className="text-sm text-gray-500 capitalize">
-                            {day.weather.description}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                        <div>
+                      <img
+                        src={getWeatherIcon(day.weather.icon)}
+                        alt={day.weather.main}
+                        className="w-12 h-12 my-2"
+                      />
+                      <p className="text-xl font-bold">
+                        {Math.round(day.temp)}°
+                        {unit === 'metric' ? 'C' : 'F'}
+                      </p>
+                      <p className="text-sm text-gray-500 capitalize">
+                        {day.weather.description}
+                      </p>
+                      <div className="mt-2 w-full grid grid-cols-2 text-sm">
+                        <div className="text-center">
                           <span className="text-gray-500">Wind</span>
-                          <p>{day.wind_speed} {unit === 'metric' ? 'm/s' : 'mph'}</p>
+                          <p>
+                            {day.wind_speed} {unit === 'metric' ? 'm/s' : 'mph'}
+                          </p>
                         </div>
-                        <div>
+                        <div className="text-center">
                           <span className="text-gray-500">Humidity</span>
                           <p>{day.humidity}%</p>
                         </div>

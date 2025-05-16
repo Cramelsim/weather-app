@@ -1,0 +1,13 @@
+/* 1. Tailwind’s base reset */
+@tailwind base;
+/* 2. Tailwind’s component classes */
+@tailwind components;
+/* 3. RippleUI’s styles */
+@import "rippleui/dist/styles.css";
+/* 4. Your own utilities */
+@tailwind utilities;
+
+/* (Optional) Your global overrides */
+body {
+  @apply bg-gray-50 text-gray-800;
+}

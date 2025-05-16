@@ -1,6 +1,6 @@
-/vendor
-/node_modules
-.env
-.storage
-/bootstrap/cache
+/backend/vendor
+/backend/node_modules
+/backend/.env
+/frontend/node_modules
+/frontend/.next
 
