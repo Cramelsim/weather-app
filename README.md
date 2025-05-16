@@ -1,61 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+markdown
+# Weather Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern weather app with Next.js frontend and Laravel backend that displays current weather and forecasts.
 
-## About Laravel
+![Weather App Screenshot](./screenshot.png)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Current weather with temperature, conditions, and icons
+- 3-day forecast with weather predictions
+- City search functionality
+- Unit conversion (Celsius/Fahrenheit)
+- Wind speed and humidity indicators
+- Responsive design for all devices
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Technologies
 
-## Learning Laravel
+**Frontend:**
+- Next.js 13+
+- TypeScript
+- Tailwind CSS
+- React Icons
+- date-fns
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Backend:**
+- Laravel 10+
+- Guzzle HTTP Client
+- OpenWeatherMap API
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clone Repository
+```bash
+git clone https://github.com/your-username/weather-app.git
+cd weather-app
+2. Backend Setup
+bash
+cd backend
+cp .env.example .env
+composer install
+php artisan key:generate
+Add your OpenWeatherMap API key to .env:
 
-## Laravel Sponsors
+env
+OPENWEATHER_API_KEY=your_api_key_here
+Start backend server:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+bash
+php artisan serve
+3. Frontend Setup
+bash
+cd ../frontend
+npm install
+npm run dev
+Configuration
+Backend Environment (.env):
 
-### Premium Partners
+env
+APP_URL=http://localhost:8000
+OPENWEATHER_API_KEY=your_api_key_here
+Frontend Environment (.env.local):
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+API Endpoints
+Get Weather Data:
 
-## Contributing
+GET /api/weather?city={city}&units={metric|imperial}
+Example Response:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+json
+{
+  "city": "London",
+  "country": "GB",
+  "current": {
+    "temp": 18.5,
+    "weather": {
+      "main": "Clouds",
+      "description": "scattered clouds",
+      "icon": "03d"
+    },
+    "wind_speed": 3.09,
+    "humidity": 65
+  },
+  "forecast": [...]
+}
+Project Structure
+weather-app/
+├── backend/
+│   ├── app/Http/Controllers/WeatherController.php
+│   ├── routes/api.php
+│   └── .env
+└── frontend/
+    ├── pages/
+    │   └── index.tsx
+    ├── public/
+    └── package.json
+Available Scripts
+Frontend:
 
-## Code of Conduct
+bash
+npm run dev    # Start development server
+npm run build  # Create production build
+npm run start  # Start production server
+Backend:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+bash
+php artisan serve      # Start development server
+php artisan optimize   # Optimize for production
+Troubleshooting
+Troubleshooting
+Common Issues:
 
-## Security Vulnerabilities
+401 Unauthorized Error:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Verify OpenWeatherMap API key
+
+Ensure key is activated (may take 10-20 minutes)
+
+CORS Errors:
+
+Add CORS middleware to Laravel
+
+Verify backend URL in frontend config
+
+Missing Weather Icons:
+
+Check network requests for icon URLs
+
+Verify OpenWeatherMap icon codes
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT License - See LICENSE for details.
