@@ -1,5 +1,3 @@
-// pages/index.tsx
-
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { format } from 'date-fns'
@@ -88,9 +86,7 @@ export default function Home() {
     `https://openweathermap.org/img/wn/${iconCode}@2x.png`
 
   useEffect(() => {
-    // Initial load for a default city
     fetchWeatherData('London')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -100,137 +96,98 @@ export default function Home() {
         <meta name="description" content="Weather application" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">
-            Weather Forecast
-          </h1>
-
+      <div className="min-h-screen bg-gray-100 p-6 flex justify-center items-center">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-5xl">
           {/* Search Box */}
-          <form onSubmit={handleSearch} className="mb-8 flex gap-2">
+          <form onSubmit={handleSearch} className="mb-4 flex gap-2">
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Enter city name"
-              className="flex-1 p-3 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
+              className="bg-blue-500 text-white px-4 py-2 rounded"
               disabled={loading}
             >
-              {loading ? 'Searching...' : 'Search'}
+              {loading ? '...' : 'Search'}
             </button>
             <button
               type="button"
               onClick={toggleUnit}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-3 rounded-lg transition-colors"
+              className="text-sm text-blue-600 hover:text-blue-800 ml-2"
             >
-              °{unit === 'metric' ? 'C' : 'F'}
+              Switch to °{unit === 'metric' ? 'F' : 'C'}
             </button>
           </form>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <div className="bg-red-100 text-red-700 border border-red-400 p-3 rounded mb-4">
               {error}
             </div>
           )}
 
           {weatherData && (
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              {/* Current Weather */}
-              <div className="p-6 md:p-8 bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-                  <div>
-                    <h2 className="text-2xl font-bold">
-                      {weatherData.city}, {weatherData.country}
-                    </h2>
-                    <p className="text-blue-100">
-                      {format(
-                        new Date(weatherData.current.dt * 1000),
-                        'EEEE, MMMM d, yyyy'
-                      )}
-                    </p>
-                    <p className="mt-2 text-xl capitalize">
-                      {weatherData.current.weather.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center mt-4 md:mt-0">
-                    <img
-                      src={getWeatherIcon(weatherData.current.weather.icon)}
-                      alt={weatherData.current.weather.main}
-                      className="w-20 h-20"
-                    />
-                    <span className="text-5xl font-bold ml-4">
-                      {Math.round(weatherData.current.temp)}°
-                      {unit === 'metric' ? 'C' : 'F'}
-                    </span>
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column: Current Weather */}
+              <div className="col-span-1 border rounded-lg p-4 bg-gray-50 shadow-sm">
+                <h2 className="text-xl font-semibold">
+                  {weatherData.city}, {weatherData.country}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {format(new Date(weatherData.current.dt * 1000), 'do MMMM yyyy')}
+                </p>
+                <img
+                  src={getWeatherIcon(weatherData.current.weather.icon)}
+                  alt={weatherData.current.weather.main}
+                  className="w-20 h-20 mt-4"
+                />
+                <p className="text-3xl font-bold mt-2">
+                  {Math.round(weatherData.current.temp)}°{unit === 'metric' ? 'C' : 'F'}
+                </p>
+                <p className="capitalize text-gray-600 mt-1">
+                  {weatherData.current.weather.description}
+                </p>
               </div>
 
-              {/* Weather Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:p-8">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
-                    Wind Status
-                  </h3>
-                  <p className="text-2xl font-bold">
-                    {weatherData.current.wind_speed}{' '}
-                    {unit === 'metric' ? 'm/s' : 'mph'}
-                  </p>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">
-                    Humidity
-                  </h3>
-                  <p className="text-2xl font-bold">
-                    {weatherData.current.humidity}%
-                  </p>
-                </div>
-              </div>
-
-              {/* Forecast */}
-              <div className="p-6 md:p-8 border-t border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                  3-Day Forecast
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Middle Column: 3 Day Forecast */}
+              <div className="col-span-2">
+                <h3 className="text-lg font-semibold mb-2">3-Day Forecast</h3>
+                <div className="grid grid-cols-3 gap-4">
                   {weatherData.forecast.slice(0, 3).map((day) => (
-                    <div
-                      key={day.dt}
-                      className="bg-gray-50 p-4 rounded-lg flex flex-col items-center"
-                    >
-                      <h4 className="font-medium text-gray-700">
-                        {format(new Date(day.dt * 1000), 'EEEE')}
-                      </h4>
+                    <div key={day.dt} className="border rounded-lg p-4 text-center bg-white shadow-sm">
+                      <p className="font-medium">
+                        {format(new Date(day.dt * 1000), 'EEE, d MMM')}
+                      </p>
                       <img
                         src={getWeatherIcon(day.weather.icon)}
                         alt={day.weather.main}
-                        className="w-12 h-12 my-2"
+                        className="w-10 h-10 mx-auto my-2"
                       />
-                      <p className="text-xl font-bold">
-                        {Math.round(day.temp)}°
-                        {unit === 'metric' ? 'C' : 'F'}
+                      <p className="text-lg font-semibold">
+                        {Math.round(day.temp_min)}° / {Math.round(day.temp_max)}°
                       </p>
-                      <p className="text-sm text-gray-500 capitalize">
-                        {day.weather.description}
-                      </p>
-                      <div className="mt-2 w-full grid grid-cols-2 text-sm">
-                        <div className="text-center">
-                          <span className="text-gray-500">Wind</span>
-                          <p>
-                            {day.wind_speed} {unit === 'metric' ? 'm/s' : 'mph'}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <span className="text-gray-500">Humidity</span>
-                          <p>{day.humidity}%</p>
-                        </div>
-                      </div>
+                      <p className="text-sm text-gray-500 capitalize">{day.weather.description}</p>
                     </div>
                   ))}
+                </div>
+
+                {/* Bottom Boxes: Wind & Humidity */}
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Wind Status</h3>
+                    <p className="text-xl font-semibold">
+                      {weatherData.current.wind_speed} {unit === 'metric' ? 'm/s' : 'mph'}
+                    </p>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Humidity</h3>
+                    <p className="text-xl font-semibold">
+                      {weatherData.current.humidity}%
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
