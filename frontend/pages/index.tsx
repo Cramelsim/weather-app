@@ -505,7 +505,7 @@ export default function Home() {
               <div style={{ position: 'relative', flex: windowWidth < 768 ? '1' : '2' }}>
                 <Search style={{ 
                   position: 'absolute', 
-                  left: '16px', 
+                  left: '20px', 
                   top: '50%', 
                   transform: 'translateY(-50%)', 
                   color: '#9ca3af', 
@@ -544,7 +544,7 @@ export default function Home() {
                     margin: '0 auto'
                   }}></div>
                 ) : (
-                  'Search'
+                  'Go'
                 )}
               </button>
               <button
